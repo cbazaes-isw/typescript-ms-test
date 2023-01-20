@@ -1,8 +1,7 @@
+require('dotenv').config();
+
 const JWT = require('jsonwebtoken');
-
-// const config = process.env;
-const config = { JWT_SECRET: 'goK!pusp6ThEdURUtRenOwUhAsWUCLheBazl!uJLPlS8EbreWLdrupIwabRAsiBu' };
-
+const { JWT_SECRET } = process.env;
 
 const express = require('express');
 const cors = require('cors');
@@ -41,7 +40,7 @@ app.post('/login', (req, res) => {
     console.log({ message: `${username} is trying to login...` });
 
     if (username == 'admin' && password == 'admin') {
-        return res.json({ token: JWT.sign({ user: username, }, config.JWT_SECRET) });
+        return res.json({ token: JWT.sign({ user: username, }, JWT_SECRET) });
     }
 
     res.status(401).json({ message: 'Unauthorized' });
