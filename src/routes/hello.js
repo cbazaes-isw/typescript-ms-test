@@ -1,13 +1,12 @@
 const router = require('express').Router();
-const auth = require('../../src/middleware/auth');
 
-router.get('/', auth, (req, res) => {
+router.get('/', (req, res) => {
     message = `Hello ${req.query.name || 'World'} from get request`;
     res.json({ message });
 });
 
 
-router.get('/:lang', auth, (req, res) => {
+router.get('/:lang', (req, res) => {
     let message = '';
     switch (req.params.lang) {
         case "es":
@@ -26,7 +25,7 @@ router.get('/:lang', auth, (req, res) => {
     res.json({ message });
 });
 
-router.post('/', auth, (req, res) => {
+router.post('/', (req, res) => {
     let result = req.body.a + req.body.b;
     res.json({ result });
 });
