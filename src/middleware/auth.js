@@ -4,11 +4,11 @@ const { JWT_SECRET } = process.env;
 
 const verifyToken = (req, res, next) => {
 
-    const token = req.headers['authorization'].replace(/bearer /gi, "");
-
-    if (!token) {
+    if (!req.headers['authorization']) {
         return res.status(403).json({ message: "Token required" });
     }
+
+    const token = req.headers['authorization'].replace(/bearer /gi, "");
 
     try {
         const decoded = JWT.verify(token, JWT_SECRET)
