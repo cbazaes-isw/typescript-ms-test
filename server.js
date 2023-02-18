@@ -22,7 +22,7 @@ app.use(cors(corsOptions));
 app.use(router);
 
 app.get('/home', (req, res) => {
-    res.sendFile(path.join(__dirname + '/src/html/index.html'));
+    res.sendFile(path.join(__dirname, '/src/html/index.html'));
 });
 
 app.get('/', (req, res) => {
