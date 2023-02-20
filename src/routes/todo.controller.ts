@@ -1,35 +1,14 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { ObjectId } from 'mongodb';
-import { MongoHelper } from "../mongo.helper";
+import { TodoModel } from "../models/todo";
 
 const todoRoutes = Router();
 
-const getCollection = () => {
-    return MongoHelper.client.db('todo').collection('todos');
-};
-
-todoRoutes.get('/todo/:id', async (req: Request, res: Response, next: NextFunction) => {
-
-    const id = req.params.id;
-    const collection = getCollection();
-    const item = await collection.findOne({ "_id": new ObjectId(id) });
-
-    if (!!item) {
-        res.status(404).end();
-        return;
-    }
-
-    res.status(200).json(item);
-
-});
-
 todoRoutes.get('/todo', async (req: Request, res: Response, next: NextFunction) => {
 
-    const collection = getCollection();
     try {
 
-        const todos = await collection.find({}).toArray();
-        const items = todos.map(item => { return { id: item._id, description: item.description } });
+        const todos = await TodoModel.find({});
+        const items = todos.map((item) => { return { id: item._id, description: item.description } });
         res.status(200).json(items);
 
     } catch (error) {
@@ -41,12 +20,41 @@ todoRoutes.get('/todo', async (req: Request, res: Response, next: NextFunction) 
 
 });
 
-todoRoutes.post('/todo', (req: Request, res: Response, next: NextFunction) => {
+todoRoutes.get('/todo/:id', async (req: Request, res: Response, next: NextFunction) => {
+
+    const id = req.params.id;
+
+    try {
+
+        const todo = await TodoModel.findOne({ _id : id });
+        console.log({ todo });
+
+        if (todo === null) {
+            res.status(404).end();
+            return;
+        }
+
+        const item = {
+            id : todo._id,
+            description: todo.description
+        }
+
+        res.status(200).json(item);
+
+    } catch (error) {
+
+        console.error(error);
+        res.status(500).json(error).end();
+
+    }
+
+});
+
+todoRoutes.post('/todo', async (req: Request, res: Response, next: NextFunction) => {
 
     const description = req.body['description'];
-    const collection = getCollection();
-    collection.insertOne({ description });
-
+    const item = new TodoModel({ description });
+    await item.save();
     res.end();
 
 });
@@ -55,21 +63,15 @@ todoRoutes.put('/todo/:id', async (req: Request, res: Response, next: NextFuncti
 
     const description = req.body['description'];
     const id = req.params.id;
-
-    const collection = getCollection();
-    collection.updateOne({ "_id": new ObjectId(id) }, { description });
-
+    await TodoModel.findByIdAndUpdate(id, { description });
     res.end();
 
 });
 
-todoRoutes.delete('/todo/:id', (req: Request, res: Response, next: NextFunction) => {
+todoRoutes.delete('/todo/:id', async (req: Request, res: Response, next: NextFunction) => {
 
     const id = req.params.id;
-
-    const collection = getCollection();
-    collection.deleteOne({ "_id": new ObjectId(id) });
-
+    await TodoModel.findByIdAndRemove(id);
     res.end();
 
 });
