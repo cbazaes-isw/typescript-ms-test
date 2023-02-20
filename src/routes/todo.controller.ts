@@ -1,14 +1,14 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { TodoModel } from "../models/todo";
+import { TodoService } from "../services/todo.service";
 
 const todoRoutes = Router();
+const service = new TodoService();
 
 todoRoutes.get('/todo', async (req: Request, res: Response, next: NextFunction) => {
 
     try {
 
-        const todos = await TodoModel.find({});
-        const items = todos.map((item) => { return { id: item._id, description: item.description } });
+        const items = await service.getAll();
         res.status(200).json(items);
 
     } catch (error) {
@@ -26,7 +26,7 @@ todoRoutes.get('/todo/:id', async (req: Request, res: Response, next: NextFuncti
 
     try {
 
-        const todo = await TodoModel.findOne({ _id : id });
+        const todo = await service.getById(id)
         console.log({ todo });
 
         if (todo === null) {
@@ -34,12 +34,7 @@ todoRoutes.get('/todo/:id', async (req: Request, res: Response, next: NextFuncti
             return;
         }
 
-        const item = {
-            id : todo._id,
-            description: todo.description
-        }
-
-        res.status(200).json(item);
+        res.status(200).json(todo);
 
     } catch (error) {
 
@@ -53,8 +48,7 @@ todoRoutes.get('/todo/:id', async (req: Request, res: Response, next: NextFuncti
 todoRoutes.post('/todo', async (req: Request, res: Response, next: NextFunction) => {
 
     const description = req.body['description'];
-    const item = new TodoModel({ description });
-    await item.save();
+    await service.create({ description });
     res.end();
 
 });
@@ -63,7 +57,7 @@ todoRoutes.put('/todo/:id', async (req: Request, res: Response, next: NextFuncti
 
     const description = req.body['description'];
     const id = req.params.id;
-    await TodoModel.findByIdAndUpdate(id, { description });
+    await service.update(id, { description });
     res.end();
 
 });
@@ -71,7 +65,7 @@ todoRoutes.put('/todo/:id', async (req: Request, res: Response, next: NextFuncti
 todoRoutes.delete('/todo/:id', async (req: Request, res: Response, next: NextFunction) => {
 
     const id = req.params.id;
-    await TodoModel.findByIdAndRemove(id);
+    await service.delete(id);
     res.end();
 
 });
