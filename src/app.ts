@@ -4,6 +4,7 @@ import cors from 'cors';
 import * as bodyparser from 'body-parser';
 import { requestLoggerMiddeware } from './middleware/request.logger';
 import { todoRoutes } from './routes/todo.controller';
+import { cafRoutes } from './routes/caf.controller';
 
 const app = express();
 
@@ -12,5 +13,6 @@ app.use(bodyparser.json());
 app.use(requestLoggerMiddeware);
 
 app.use(todoRoutes);
+app.use(cafRoutes);
 
 export { app };
