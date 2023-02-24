@@ -5,6 +5,7 @@ import * as bodyparser from 'body-parser';
 import { requestLoggerMiddeware } from './middleware/request.logger';
 import { todoRoutes } from './routes/todo.controller';
 import { cafRoutes } from './routes/caf.controller';
+import { digitalCertificateRoutes } from './routes/digitalcertificate.controller';
 
 const app = express();
 
@@ -14,5 +15,6 @@ app.use(requestLoggerMiddeware);
 
 app.use(todoRoutes);
 app.use(cafRoutes);
+app.use(digitalCertificateRoutes);
 
 export { app };
