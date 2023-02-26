@@ -35,22 +35,18 @@ export class DigitalCertificateService {
         };
 
     }
+// legalCode, password, content, mimeType
+    public async create(legalCode: string, password: string, content: Buffer, mimeType : string): Promise<any> {
 
-    public async create(password: string, base64content: string): Promise<any> {
-
-        const content = Buffer.from(base64content, 'base64');
         const info = p12info(content, password);
 
-        console.log(info);
-
-        const legalCode = '';
         const subject = info.subject.commonName;
         const email = info.subject.emailAddress;
         const organization = info.subject.organizationName;
         const issueDate = info.validity.notBefore;
         const dueDate = info.validity.notAfter;
 
-        const item = new DigitalCertificateModel({ legalCode, subject, email, organization, issueDate, dueDate, info, content });
+        const item = new DigitalCertificateModel({ legalCode, subject, email, organization, issueDate, dueDate, info, content, mimeType });
         item.save();
 
     }

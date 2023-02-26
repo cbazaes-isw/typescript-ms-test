@@ -9,7 +9,8 @@ const DigitalCertificateSchema = new mongoose.Schema({
     issueDate: { type: Date },
     dueDate: { type: Date },
     info: { type: Schema.Types.Mixed },
-    content: { type: Buffer }
+    content: { type: Buffer },
+    mimeType: { type: String }
 });
 
 const DigitalCertificateModel = mongoose.model('DigitalCertificate', DigitalCertificateSchema);

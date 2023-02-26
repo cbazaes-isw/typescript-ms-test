@@ -1,6 +1,10 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { DigitalCertificateService } from "../services/digitalcertificate.service";
 
+import multer from 'multer';
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
 const digitalCertificateRoutes = Router();
 const service = new DigitalCertificateService();
 
@@ -45,11 +49,14 @@ digitalCertificateRoutes.get('/digitalcertificate/:id', async (req: Request, res
 
 });
 
-digitalCertificateRoutes.post('/digitalcertificate', async (req: Request, res: Response, next: NextFunction) => {
+digitalCertificateRoutes.post('/digitalcertificate', upload.single("certificate"), async (req: Request, res: Response, next: NextFunction) => {
 
-    const base64content = req.body['base64content'];
-    const password = req.body['password']
-    await service.create(password, base64content);
+    const content = req.file?.buffer as Buffer;
+    const mimeType = req.file?.mimetype as string;
+    const password = req.body['password'];
+    const legalCode = req.body['legalCode'];
+    
+    await service.create(legalCode, password, content, mimeType);
     res.end();
 
 });
