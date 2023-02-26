@@ -13,9 +13,9 @@ export class DigitalCertificateService {
         const items = result.map((item) => {
             return {
                 id: item._id,
-                rut: item.rut,
-                fechaEmision: item.fechaEmision,
-                fechaExpiracion: item.fechaExpiracion
+                legalCode: item.legalCode,
+                issueDate: item.issueDate,
+                dueDate: item.dueDate
             }
         });
         return items;
@@ -29,9 +29,9 @@ export class DigitalCertificateService {
 
         return {
             id: item._id,
-            rut: item.rut,
-            fechaEmision: item.fechaEmision,
-            fechaExpiracion: item.fechaExpiracion
+            legalCode: item.legalCode,
+            issueDate: item.issueDate,
+            dueDate: item.dueDate
         };
 
     }
@@ -43,12 +43,15 @@ export class DigitalCertificateService {
 
         console.log(info);
 
-        let rut = '';
-        let fechaEmision = '';
-        let fechaExpiracion = '';
+        const legalCode = '';
+        const subject = info.subject.commonName;
+        const email = info.subject.emailAddress;
+        const organization = info.subject.organizationName;
+        const issueDate = info.validity.notBefore;
+        const dueDate = info.validity.notAfter;
 
-        // const item = new DigitalCertificateModel({ rut, fechaEmision, fechaExpiracion, content });
-        // item.save();
+        const item = new DigitalCertificateModel({ legalCode, subject, email, organization, issueDate, dueDate, info, content });
+        item.save();
 
     }
 
