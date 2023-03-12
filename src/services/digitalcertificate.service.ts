@@ -35,8 +35,8 @@ export class DigitalCertificateService {
         };
 
     }
-// legalCode, password, content, mimeType
-    public async create(legalCode: string, password: string, content: Buffer, mimeType : string): Promise<any> {
+    
+    public async create(legalCode: string, password: string, content: Buffer, mimeType: string, fileName: string): Promise<any> {
 
         const info = p12info(content, password);
 
@@ -46,7 +46,18 @@ export class DigitalCertificateService {
         const issueDate = info.validity.notBefore;
         const dueDate = info.validity.notAfter;
 
-        const item = new DigitalCertificateModel({ legalCode, subject, email, organization, issueDate, dueDate, info, content, mimeType });
+        const item = new DigitalCertificateModel({
+            legalCode,
+            subject,
+            email,
+            organization,
+            issueDate,
+            dueDate,
+            info,
+            content,
+            mimeType,
+            fileName
+        });
         item.save();
 
     }

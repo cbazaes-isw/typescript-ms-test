@@ -53,10 +53,11 @@ digitalCertificateRoutes.post('/digitalcertificate', upload.single("certificate"
 
     const content = req.file?.buffer as Buffer;
     const mimeType = req.file?.mimetype as string;
+    const fileName = req.file?.filename as string;
     const password = req.body['password'];
     const legalCode = req.body['legalCode'];
     
-    await service.create(legalCode, password, content, mimeType);
+    await service.create(legalCode, password, content, mimeType, fileName);
     res.end();
 
 });

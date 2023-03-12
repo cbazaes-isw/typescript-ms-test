@@ -12,7 +12,8 @@ const CafSchema = new mongoose.Schema({
     folioDesde: { type: Number },
     folioHasta: { type: Number },
     fechaAutorizacion: { type: Date, index: true },
-    content: { type: Buffer }
+    content: { type: Buffer },
+    created: { type: Date, default: Date.now }
 });
 
 const CafModel = mongoose.model('Caf', CafSchema);
